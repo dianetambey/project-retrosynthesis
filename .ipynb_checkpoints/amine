@@ -1,0 +1,145 @@
+def amine_disconnection (mol: Chem.rdchem.Mol) ->int:
+    
+    if mol.HasSubstructMatch(Chem.MolFromSmarts('[^3][N]')):
+        print (f"Amine disconnection available")
+        print (f"--------------------------------------")
+        carbonyl_smiles = '(=O)'
+        LiAlH4_smiles ='C(=O)([O-])[O-].[K+].[K+]'
+        carbonyl = Chem.MolFromSmiles(carbonyl_smiles)
+        LiAlH4 = Chem.MolFromSmiles(LiAlH4_smiles)
+        rxn = AllChem.ReactionFromSmarts('[C^3:1][N:2].[=O:3]>>[C^2:1][=O:3][N:2]')
+        reactants = unique_list_reactants(rxn.RunReactants((mol,iodine )))
+        opt = 1 #Parameter to count the number of possible reactants that form C(sp3 hybridized)-S bonds
+        for r in reactants: #Prints the reactants
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+            reactant_2 = [r[1], LiAlH4]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            opt += 1
+            print (f"--------------------------------------")
+        print(f"--------------------------------------")
+        print (f"This product needs to be hydrolyzed using NaOH, then quenched using an acid, and finally heated"
+               f" in order to obtain the target molecule")
+        print (f"--------------------------------------")
+        return 1
+    return 0
+
+
+        chloro_smiles = '[Cl]'
+        LiAlH4_smiles ='C(=O)([O-])[O-].[K+].[K+]'
+        chloro = Chem.MolFromSmiles(chloro_smiles)
+        LiAlH4 = Chem.MolFromSmiles(LiAlH4_smiles)
+        rxn = AllChem.ReactionFromSmarts('[N:1][C^2:2][=O:3].[Cl:4]>>[N:1].[Cl:4][C^2:2][=O:3]')
+        reactants = unique_list_reactants(rxn.RunReactants((mol,iodine )))
+        opt = 1 #Parameter to count the number of possible reactants that form C(sp3 hybridized)-S bonds
+        for r in reactants: #Prints the reactants
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+            reactant_2 = [r[1], potassium_carbonate]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            opt += 1
+            print (f"--------------------------------------")
+        print(f"--------------------------------------")
+        return 1
+    return 0
+
+
+        NaBH4_smiles ='[BH4-].[Na+]'
+        NaBH4 = Chem.MolFromSmiles(NaBH4_smiles)
+        rxn = AllChem.ReactionFromSmarts('[C^3:1][N:2]>>[C^2:1][=N:2]')
+        reactants = unique_list_reactants(rxn.RunReactants((mol,iodine )))
+        opt = 1 #Parameter to count the number of possible reactants that form C(sp3 hybridized)-S bonds
+        for r in reactants: #Prints the reactants
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+            reactant_2 = [r[1], potassium_carbonate]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            opt += 1
+            print (f"--------------------------------------")
+        print(f"--------------------------------------")
+        return 1
+    return 0
+
+
+        NaBH4_smiles ='[BH4-].[Na+]'
+        proton_smiles = '[H+]'
+        proton = Chem.MolFromSmiles(proton_smiles)
+        NaBH4 = Chem.MolFromSmiles(NaBH4_smiles)
+        rxn = AllChem.ReactionFromSmarts('[C^2:1][=N:2].[=O:3]>>[C^2:1][=O:3].[N:2]')
+        reactants = unique_list_reactants(rxn.RunReactants((mol,iodine )))
+        opt = 1 #Parameter to count the number of possible reactants that form C(sp3 hybridized)-S bonds
+        for r in reactants: #Prints the reactants
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+            reactant_2 = [r[1], potassium_carbonate]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            opt += 1
+            print (f"--------------------------------------")
+        print(f"--------------------------------------")
+        return 1
+    return 0
+
+
+
+ proton_smiles = '[H+]'
+        proton = Chem.MolFromSmiles(proton_smiles)
+        hydroxyl_smile = 'O'
+        hydroxyl = Chem.MolFromSmiles(hydroxyl_smile)
+        rxn = AllChem.ReactionFromSmarts('[C^2:1](=[O:2])[O:3][C:4].[O:5]>>[C^2:1](=[O:2])[O:5].[O:3][C:4]') #Searches for the ester and returns
+        reactants = unique_list_reactants(rxn.RunReactants((mol, hydroxyl))) #reactants to make the ester in a list of lists; each list = reactive site
+        opt = 1 #Parameter to count the number of possible reactants that form esters
+        for r in reactants: #Prints the reactants and the catalyst
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+           reactant_2 = [r[1]]
+            catalyst = [proton]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            print(f"Catalyst")
+            display(Draw.MolsToGridImage(catalyst))
+            opt += 1
+            print (f"--------------------------------------")
+        print (f"--------------------------------------")
+        return 1
+    return 0
+        
+
+
+
+
+
+
+iodine_smiles = 'I'
+        potassium_carbonate_smiles ='C(=O)([O-])[O-].[K+].[K+]'
+        iodine = Chem.MolFromSmiles(iodine_smiles)
+        potassium_carbonate = Chem.MolFromSmiles(potassium_carbonate_smiles)
+        rxn = AllChem.ReactionFromSmarts('[C^3:1][N:2].[I:3]>>[C^3:1][I:3].[N:2]')
+        reactants = unique_list_reactants(rxn.RunReactants((mol,iodine )))
+        opt = 1 #Parameter to count the number of possible reactants that form C(sp3 hybridized)-S bonds
+        for r in reactants: #Prints the reactants
+            print(f"Option {opt}")
+            reactant_1 = [r[0]]
+            reactant_2 = [r[1], potassium_carbonate]
+            print(f"Reactant 1")
+            display(Draw.MolsToGridImage(reactant_1))
+            print(f"Reactant 2")
+            display(Draw.MolsToGridImage(reactant_2))
+            opt += 1
+            print (f"--------------------------------------")
+        print(f"--------------------------------------")
+        return 1
+    return 0
