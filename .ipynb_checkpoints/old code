@@ -1,0 +1,120 @@
+import math
+import re
+from rdkit.Chem import rdChemReactions
+from rdkit import Chem
+import numpy as np
+import matplotlib.pyplot as plt
+import requests
+
+molecule_name='ethanol'
+
+### molecule name --> smiles configuration
+def smiles(molecule_name):
+    url = f"https://cactus.nci.nih.gov/chemical/structure/{molecule_name}/smiles"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text.strip()
+    else:
+        return None
+
+molecule_to_synthesize=smiles(molecule_name)
+
+### smiles --> molecule name
+def smiles_to_name(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol:
+        name = Chem.MolToMolBlock(mol).split("\n")[1].strip()
+        return name
+    else:
+        return "Invalid SMILES"
+
+
+def reactants(molecule_to_synthesize):
+    grps_total=['OCCO','OCCN','NCCO','NCC','Nc','OC','Oc','NC(=O)','OC(=O)','[S]C','CCN','cN','CO','Oc','C(=O)O','C(=O)N','C[S]','C#C','C=C']
+    grps_1=['NCC','Nc','OC','Oc','NC(=O)','OC(=O)','[S]C']
+    grps_2=['CCN','cN','CO','Oc','C(=O)O','C(=O)N','C[S]']
+    grps_3=['C#C','C=C']
+    grps_4=['OCCO','OCCN','NCCO'] ###epoxyde! add first in list
+    grps_5=['C=CC(=O)','CSC','SCCC(=O)','C(=O)CCS','NCCC(=O)','C(=O)CCN'] ###problem with N CNCCC(=O)
+    ###problem with amine
+    ###grps=[grps_1,grps_2,]
+
+    if grps_total.count(molecule_to_synthesize):
+        return(none)
+        
+    for i in grps_total:
+        match=re.search(i,molecule_to_synthesize)
+
+    if match=='False':
+        return(none)
+        
+    if grps_4.count(match):
+        if match=='NCCO' or 'SCCO':
+            s1=molecule_to_synthesize[:match.start()+1]
+            s2='c1O1c'+molecule_to_synthesize[match.end()+1:]
+        else:
+            s1=molecule_to_synthesize[:match.start()]+'c1Oc1'
+            s2=molecule_to_synthesize[match.end()-1:]
+        return(s1,s2)
+
+    if grps_5.count(match):
+        if match=='SCCC(=O)' or 'NCCC(=O)' :
+            s1=molecule_to_synthesize[:match.start()+1]
+            s2='C=C'+molecule_to_synthesize[match.start()+3:]
+        else:
+            s1=molecule_to_synthesize[match.end():]
+            s2=molecule_to_synthesize[:match.end()-1]+'C=C'
+        return(s1,s2)
+                
+
+    if grps_1.count(match):
+            s1=molecule_to_synthesize[:match.start()+1]
+            s2='[Cl]'+molecule_to_synthesize[match.start()+1:]
+            return(s1,s2)
+        ###create s2 without Cl than add an if condition to see different options (if only 1 O-->epoxyde,..)
+
+    if grps_2.count(match):
+        s1=molecule_to_synthesize[:match.end()]+'[Cl]'
+        s2=molecule_to_synthesize[match.end():]
+        return(s1,s2)
+
+            
+    if grps_3.count(match):
+        if match=='C=C':
+            s0=molecule_to_synthesize.replace('C=C','C#C')
+            s1=molecule_to_synthesize[:match.end()+1]
+            s2='[Br]'+molecule_to_synthesize[match.end()+1:]
+            s3=s1[:match.start()]
+            return(s3,s2)
+            ###print rxn 'C#C' + s3 --> s1 + s2--> s0 --reduction--> molecule_to_synthesize
+        elif match=='C#C':
+            s1=molecule_to_synthesize[:match.end()+1]
+            s2='[Br]'+molecule_to_synthesize[match.end()+1:]
+            s3=s1[:match.start()]
+            ###print rxn 'C#C' + s3 --> s1 + s2--> molecule_to_synthesize
+            return(s3,s2)
+        
+    else:
+        return('False')
+            
+reactantss=[reactants(molecule_to_synthesize)]
+rr=[]
+captions=[]
+
+def recursion(reactantss):
+    a=[]
+    for i,j in enumerate(reactantss):
+        r.append([reactants(reactantss[i]),reactantss[i]])
+        a.append(reactants(reactantss[i]))
+        captions.append([])
+        ### reactants(reactants[i]) --> code for rxn, add in list 
+        return(recursion([j for i,j in enumerate(a)]))
+        ###problem with rr
+
+def retrosynthesis(reactantss,molecule_to_synthesize):
+    for i in range(0,len(r)):
+        for j in range(0,len(r[len(r)-1-i])):
+            captions[i].append(smiles_to_name(r[len(r)-1-i][j]))
+        Draw.MolsToGridImage(r[len(r)-1-i], molsPerRow=len(r[len(r)-1-i]), subImgSize=(300,300), legends=captions[i])
+        
+recursion(reactantss)
